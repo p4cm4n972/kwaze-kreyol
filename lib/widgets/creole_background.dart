@@ -29,6 +29,11 @@ class CreoleBackground extends StatelessWidget {
 
         // Cercle vert/jaune en bas à droite
         Positioned(
+          top: 40,
+          left: 20,
+          child: Image.asset('images/logo-kk.png', width: 120, height: 120),
+        ),
+        Positioned(
           bottom: -80,
           right: -50,
           child: Container(

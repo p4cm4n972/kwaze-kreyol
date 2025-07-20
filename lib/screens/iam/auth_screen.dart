@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwaze_kreyol/main.dart';
+import 'package:kwaze_kreyol/widgets/creole_background.dart';
 import 'dart:convert';
 import '../../services/iam/auth_service.dart';
 
@@ -86,62 +87,67 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      isLogin ? 'Connexion' : 'Créer un compte',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+      body: CreoleBackground(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        isLogin ? 'Connexion' : 'Créer un compte',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      decoration: const InputDecoration(labelText: 'Email'),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) => value != null && value.contains('@')
-                          ? null
-                          : 'Email invalide',
-                      onSaved: (value) => email = value!,
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Mot de passe',
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        decoration: const InputDecoration(labelText: 'Email'),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) =>
+                            value != null && value.contains('@')
+                            ? null
+                            : 'Email invalide',
+                        onSaved: (value) => email = value!,
                       ),
-                      obscureText: true,
-                      validator: (value) => value != null && value.length >= 6
-                          ? null
-                          : 'Minimum 6 caractères',
-                      onSaved: (value) => password = value!,
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _submit,
-                      child: Text(isLogin ? 'Se connecter' : 'Créer un compte'),
-                    ),
-                    TextButton(
-                      onPressed: () => setState(() => isLogin = !isLogin),
-                      child: Text(
-                        isLogin
-                            ? "Pas encore de compte ? S'inscrire"
-                            : 'Déjà inscrit ? Se connecter',
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Mot de passe',
+                        ),
+                        obscureText: true,
+                        validator: (value) => value != null && value.length >= 6
+                            ? null
+                            : 'Minimum 6 caractères',
+                        onSaved: (value) => password = value!,
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _submit,
+                        child: Text(
+                          isLogin ? 'Se connecter' : 'Créer un compte',
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => setState(() => isLogin = !isLogin),
+                        child: Text(
+                          isLogin
+                              ? "Pas encore de compte ? S'inscrire"
+                              : 'Déjà inscrit ? Se connecter',
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

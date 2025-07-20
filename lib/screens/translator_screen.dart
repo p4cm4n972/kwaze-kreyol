@@ -36,7 +36,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
         children: [
           const SizedBox(height: 48),
           Text(
-            'Tradui an Kréyol',
+            'Tradui',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineLarge,
           ),
@@ -44,7 +44,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
           TextField(
             controller: _controller,
             decoration: InputDecoration(
-              hintText: 'Antwé on mo an fwansé...',
+              hintText: 'Antré an mo ...',
               filled: true,
               fillColor: Colors.white,
               prefixIcon: const Icon(Icons.language),
