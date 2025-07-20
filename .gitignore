@@ -43,3 +43,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+.dart_tool/
+.idea/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+.DS_Store
+build/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+pubspec.lock
