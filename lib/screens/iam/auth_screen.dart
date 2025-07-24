@@ -118,26 +118,29 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      TextFormField(
-                        decoration: const InputDecoration(labelText: 'Email'),
-                        validator: (value) => value != null && value.length >= 3
-                            ? null
-                            : 'Email requis',
-                        onSaved: (value) => email = value!,
-                      ),
-                      const SizedBox(height: 12),
                       if (!isLogin)
                         TextFormField(
-                          decoration: const InputDecoration(labelText: 'Email'),
-                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            labelText: 'Pseudo',
+                          ),
                           validator: (value) =>
-                              value != null &&
-                                  value.isNotEmpty &&
-                                  !value.contains('@')
-                              ? 'Email invalide'
-                              : null,
-                          onSaved: (value) => email = value!,
+                              value != null && value.length >= 3
+                              ? null
+                              : 'Pseudo requis',
+                          onSaved: (value) => pseudo = value!,
                         ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        decoration: const InputDecoration(labelText: 'Email'),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) =>
+                            value != null &&
+                                value.isNotEmpty &&
+                                !value.contains('@')
+                            ? 'Email invalide'
+                            : null,
+                        onSaved: (value) => email = value!,
+                      ),
                       if (!isLogin) const SizedBox(height: 12),
                       TextFormField(
                         decoration: const InputDecoration(

@@ -54,7 +54,7 @@ class AuthService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
-
+    print('Login response: ${response.statusCode} => ${response.body}');
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);
 
@@ -69,7 +69,8 @@ class AuthService {
         return 'Réponse invalide du serveur';
       }
     } else if (response.statusCode == 401) {
-      return 'Identifiants incorrects';
+      final body = jsonDecode(response.body);
+      return body['message'] ?? 'Erreur de validation';
     } else {
       print('Login error: ${response.statusCode} => ${response.body}');
       return 'Erreur lors de la connexion';
