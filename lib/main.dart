@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kwaze_kreyol/screens/iam/auth_screen.dart';
 import 'package:kwaze_kreyol/screens/profile/profile_screen.dart';
 import 'package:kwaze_kreyol/services/iam/auth_service.dart';
+import 'package:kwaze_kreyol/widgets/splash_screen.dart';
 import 'screens/translator_screen.dart';
 import 'screens/games_screen.dart';
 import 'screens/quotes_screen.dart';
@@ -11,10 +12,10 @@ import 'widgets/creole_bottom_navbar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final authService = AuthService();
-  final isConnected = await authService.isLoggedIn();
 
-  runApp(KwazeKreyolApp(isConnected: isConnected));
+  runApp(
+    const MaterialApp(debugShowCheckedModeBanner: false, home: SplashScreen()),
+  );
 }
 
 class KwazeKreyolApp extends StatelessWidget {

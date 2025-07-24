@@ -31,7 +31,7 @@ class CreoleBackground extends StatelessWidget {
         Positioned(
           top: 40,
           left: 20,
-          child: Image.asset('images/logo-kk.png', width: 120, height: 120),
+          child: Image.asset('assets/images/logo-kk.png', width: 120, height: 120),
         ),
         Positioned(
           bottom: -80,

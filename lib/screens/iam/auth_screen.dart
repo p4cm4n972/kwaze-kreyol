@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:kwaze_kreyol/main.dart';
 import 'package:kwaze_kreyol/widgets/creole_background.dart';
-import 'dart:convert';
 import '../../services/iam/auth_service.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -15,6 +13,7 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   bool isLogin = true;
   final _formKey = GlobalKey<FormState>();
+  String pseudo = '';
   String email = '';
   String password = '';
   final AuthService _authService = AuthService();
@@ -23,58 +22,66 @@ class _AuthScreenState extends State<AuthScreen> {
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState!.save();
 
-    if (mockMode) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      await _authService.saveToken('mock-token');
+    String? error;
+    if (isLogin) {
+      error = await _authService.login(email, password);
       if (!mounted) return;
-      _showWelcomeDialog();
-      return;
-    }
-
-    final url = isLogin
-        ? Uri.parse('http://localhost:3000/auth/login')
-        : Uri.parse('http://localhost:3000/auth/register');
-
-    try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        await _authService.saveToken(data['access_token'] ?? '');
-        if (!mounted) return;
-        _showWelcomeDialog();
+      if (error == null) {
+        _showWelcomeDialog(); // va vers HomeScreen
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Erreur d'authentification")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error)));
       }
-    } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Erreur réseau')));
+    } else {
+      error = await _authService.register(pseudo, email, password);
+      if (!mounted) return;
+
+      if (error == null) {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Text('📧 Confirme ton e-mail'),
+            content: Text("Un lien de confirmation a été envoyé à $email."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  setState(() => isLogin = true); // retour à formulaire login
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error)));
+      }
     }
   }
 
-  void _showWelcomeDialog() {
+  void _showWelcomeDialog() async {
+    final decodedPseudo = await _authService.getPseudoFromToken();
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('🎉 Bienvenue !'),
-        content: Text('Bon retour parmi nous, $email !'),
+        content: Text('Bon retour parmi nous, ${decodedPseudo ?? pseudo} !'),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                MaterialPageRoute(builder: (_) => const HomeScreen()),
               );
             },
             child: const Text("Continuer"),
@@ -113,14 +120,25 @@ class _AuthScreenState extends State<AuthScreen> {
                       const SizedBox(height: 20),
                       TextFormField(
                         decoration: const InputDecoration(labelText: 'Email'),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) =>
-                            value != null && value.contains('@')
+                        validator: (value) => value != null && value.length >= 3
                             ? null
-                            : 'Email invalide',
+                            : 'Email requis',
                         onSaved: (value) => email = value!,
                       ),
                       const SizedBox(height: 12),
+                      if (!isLogin)
+                        TextFormField(
+                          decoration: const InputDecoration(labelText: 'Email'),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) =>
+                              value != null &&
+                                  value.isNotEmpty &&
+                                  !value.contains('@')
+                              ? 'Email invalide'
+                              : null,
+                          onSaved: (value) => email = value!,
+                        ),
+                      if (!isLogin) const SizedBox(height: 12),
                       TextFormField(
                         decoration: const InputDecoration(
                           labelText: 'Mot de passe',
