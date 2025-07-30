@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'games/scrabble_screen.dart';
 import 'games/word_search_screen.dart';
 import 'games/broken_words_screen.dart';
-import 'games/dominos_screen.dart';
 
 class GamesScreen extends StatelessWidget {
   const GamesScreen({super.key});
@@ -36,16 +34,6 @@ class GamesScreen extends StatelessWidget {
                   childAspectRatio: aspectRatio,
                   children: [
                     _GameCard(
-                      icon: Icons.grid_on,
-                      title: 'Scrabble',
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ScrabbleScreen(),
-                        ),
-                      ),
-                    ),
-                    _GameCard(
                       icon: Icons.search,
                       title: 'Mots Mélés',
                       onTap: () => Navigator.push(
@@ -62,16 +50,6 @@ class GamesScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) => const BrokenWordsScreen(),
-                        ),
-                      ),
-                    ),
-                    _GameCard(
-                      icon: Icons.view_column,
-                      title: 'Dominos',
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const DominosScreen(),
                         ),
                       ),
                     ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/creole_background.dart';
 
 class ProverbsScreen extends StatelessWidget {
   const ProverbsScreen({super.key});

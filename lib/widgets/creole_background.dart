@@ -19,7 +19,7 @@ class CreoleBackground extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [Colors.red.shade300, Colors.orange.shade200],
+                colors: [Colors.green.shade300, Colors.yellow.shade200],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -31,7 +31,11 @@ class CreoleBackground extends StatelessWidget {
         Positioned(
           top: 40,
           left: 20,
-          child: Image.asset('assets/images/logo-kk.png', width: 120, height: 120),
+          child: Image.asset(
+            'assets/images/logo-kk.png',
+            width: 120,
+            height: 120,
+          ),
         ),
         Positioned(
           bottom: -80,
@@ -42,7 +46,8 @@ class CreoleBackground extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [Colors.green.shade300, Colors.yellow.shade200],
+                colors: [Colors.red.shade300, Colors.orange.shade200],
+
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
               ),

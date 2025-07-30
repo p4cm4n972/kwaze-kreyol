@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kwaze_kreyol/screens/iam/auth_screen.dart';
-import 'package:kwaze_kreyol/services/iam/auth_service.dart';
+import 'package:go_router/go_router.dart';
 import 'package:audioplayers/audioplayers.dart';
-import '../main.dart';
+import 'package:kwaze_kreyol/services/iam/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,59 +10,31 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
-
-    _scaleAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
-    );
-
-    _controller.forward();
-
-    _navigate();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _navigate());
   }
 
   Future<void> _navigate() async {
     final player = AudioPlayer();
     await player.play(AssetSource('sounds/tambour_intro_2s.mp3'));
-
     await Future.delayed(const Duration(seconds: 2));
+
     final isConnected = await AuthService().isLoggedIn();
-
     if (!mounted) return;
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => isConnected ? const HomeScreen() : const AuthScreen(),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    context.go(isConnected ? '/home' : '/auth');
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.orange[50],
+    return const Scaffold(
+      backgroundColor: Colors.orange,
       body: Center(
-        child: ScaleTransition(
-          scale: _scaleAnimation,
-          child: Image.asset('assets/images/logo-kk.png', width: 150),
+        child: Image(
+          image: AssetImage('assets/images/logo-kk.png'),
+          width: 150,
         ),
       ),
     );

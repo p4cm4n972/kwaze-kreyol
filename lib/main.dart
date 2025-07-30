@@ -1,36 +1,43 @@
+// main.dart
+
 import 'package:flutter/material.dart';
-import 'package:kwaze_kreyol/screens/iam/auth_screen.dart';
-import 'package:kwaze_kreyol/screens/profile/profile_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kwaze_kreyol/app_router.dart';
+import 'package:kwaze_kreyol/screens/games_screen.dart';
+import 'package:kwaze_kreyol/screens/proverbs_screen.dart';
+import 'package:kwaze_kreyol/screens/quotes_screen.dart';
+import 'package:kwaze_kreyol/screens/translator_screen.dart';
 import 'package:kwaze_kreyol/services/iam/auth_service.dart';
-import 'package:kwaze_kreyol/widgets/splash_screen.dart';
-import 'screens/translator_screen.dart';
-import 'screens/games_screen.dart';
-import 'screens/quotes_screen.dart';
-import 'screens/proverbs_screen.dart';
-import 'widgets/creole_background.dart';
-import 'widgets/creole_bottom_navbar.dart';
+import 'package:kwaze_kreyol/widgets/creole_background.dart';
+import 'package:kwaze_kreyol/widgets/creole_bottom_navbar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(
-    const MaterialApp(debugShowCheckedModeBanner: false, home: SplashScreen()),
+  // Empêche le plein écran forcé (affiche les barres système)
+  await SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.manual,
+    overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
   );
+
+  runApp(const KwazeKreyolApp());
 }
 
 class KwazeKreyolApp extends StatelessWidget {
-  final bool isConnected;
-  const KwazeKreyolApp({super.key, required this.isConnected});
+  const KwazeKreyolApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Kwazé Kréyol',
       debugShowCheckedModeBanner: false,
-      home: isConnected ? const HomeScreen() : const AuthScreen(),
+      routerConfig: appRouter,
     );
   }
 }
+
+// HomeScreen reste inchangé
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -65,25 +72,18 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ProfileScreen()),
-              );
+              context.push('/profile');
             },
           ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await AuthService().logout();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const AuthScreen()),
-              );
+              context.go('/auth');
             },
           ),
         ],
       ),
-
       bottomNavigationBar: CreoleBottomNavBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

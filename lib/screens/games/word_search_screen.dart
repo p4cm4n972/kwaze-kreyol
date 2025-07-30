@@ -45,6 +45,11 @@ class _WordSearchScreenState extends State<WordSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen = screenSize.width < 500;
+
+    final uniqueWords = _gameState.words.toSet().toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mots Mélés Kréyol'),
@@ -56,28 +61,61 @@ class _WordSearchScreenState extends State<WordSearchScreen> {
           ),
         ],
       ),
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          WordSearchGrid(gameState: _gameState, onAllWordsFound: _onVictory),
-          if (_showVictory)
-            Container(
-              color: Colors.black54,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.celebration, color: Colors.white, size: 80),
-                    SizedBox(height: 16),
-                    Text(
-                      'Bravo ! 🎉',
-                      style: TextStyle(fontSize: 28, color: Colors.white),
-                    ),
-                  ],
-                ),
+      body: SafeArea(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  WordSearchGrid(
+                    gameState: _gameState,
+                    onAllWordsFound: _onVictory,
+                  ),
+                ],
               ),
             ),
-        ],
+
+            if (_showVictory)
+              Container(
+                color: Colors.black.withOpacity(0.6),
+                child: Center(
+                  child: Container(
+                    margin: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: Offset(2, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.celebration, color: Colors.green, size: 80),
+                        SizedBox(height: 16),
+                        Text(
+                          'Bravo ! 🎉',
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

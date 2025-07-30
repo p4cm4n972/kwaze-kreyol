@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kwaze_kreyol/main.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwaze_kreyol/widgets/creole_background.dart';
 import '../../services/iam/auth_service.dart';
 
@@ -19,6 +19,9 @@ class _AuthScreenState extends State<AuthScreen> {
   final AuthService _authService = AuthService();
 
   Future<void> _submit() async {
+    print(
+      'Submitting form: isLogin=$isLogin, pseudo=$pseudo, email=$email, password=$password',
+    );
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState!.save();
 
@@ -66,7 +69,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void _showWelcomeDialog() async {
-    final decodedPseudo = await _authService.getPseudoFromToken();
+    final decodedPseudo = await _authService.getUserData();
 
     showDialog(
       context: context,
@@ -78,11 +81,8 @@ class _AuthScreenState extends State<AuthScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(ctx).pop();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const HomeScreen()),
-              );
+              Navigator.of(ctx).pop(); // On ferme le dialog
+              context.go('/home'); // 👈 Navigation GoRouter
             },
             child: const Text("Continuer"),
           ),

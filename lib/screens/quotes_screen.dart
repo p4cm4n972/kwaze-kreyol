@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/creole_background.dart';
 
 class QuotesScreen extends StatelessWidget {
   const QuotesScreen({super.key});

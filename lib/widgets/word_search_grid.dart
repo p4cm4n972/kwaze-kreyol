@@ -1,5 +1,3 @@
-// Le widget WordSearchGrid devient purement visuel et reçoit un GameState en paramètre
-
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -57,8 +55,7 @@ class WordSearchGameState {
       if (row + dy * word.length >= gridSize ||
           row + dy * word.length < 0 ||
           col + dx * word.length >= gridSize ||
-          col + dx * word.length < 0)
-        continue;
+          col + dx * word.length < 0) continue;
 
       bool canPlace = true;
       for (int i = 0; i < word.length; i++) {
@@ -133,15 +130,15 @@ class _WordSearchGridState extends State<WordSearchGrid> {
   Widget build(BuildContext context) {
     final size = widget.gameState.gridSize;
     final screenSize = MediaQuery.of(context).size;
-    final shortestSide = min(screenSize.width, screenSize.height * 0.75);
+    final shortestSide = min(screenSize.width, screenSize.height * 0.65);
     final cellSize = shortestSide / size;
 
-    return GestureDetector(
-      onPanStart: (details) => _handleTouch(details.localPosition, cellSize),
-      onPanUpdate: (details) => _handleTouch(details.localPosition, cellSize),
-      child: Column(
-        children: [
-          SizedBox(
+    return Column(
+      children: [
+        GestureDetector(
+          onPanStart: (details) => _handleTouch(details.localPosition, cellSize),
+          onPanUpdate: (details) => _handleTouch(details.localPosition, cellSize),
+          child: SizedBox(
             height: cellSize * size,
             width: cellSize * size,
             child: GridView.builder(
@@ -156,21 +153,18 @@ class _WordSearchGridState extends State<WordSearchGrid> {
                 final col = index % size;
                 final letter = widget.gameState.grid[row][col];
                 final key = '$row:$col';
-                final isHighlighted = widget.gameState.selectedCoordinates
-                    .contains(key);
-                final isLocked = widget.gameState.lockedCoordinates.contains(
-                  key,
-                );
+                final isHighlighted = widget.gameState.selectedCoordinates.contains(key);
+                final isLocked = widget.gameState.lockedCoordinates.contains(key);
 
                 return Container(
                   margin: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                    color: isLocked
-                        ? Colors.greenAccent
+                    gradient: isLocked
+                        ? const LinearGradient(colors: [Colors.green, Colors.teal])
                         : isHighlighted
-                        ? Colors.amberAccent
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(6),
+                            ? const LinearGradient(colors: [Colors.orange, Colors.yellow])
+                            : const LinearGradient(colors: [Colors.white, Colors.grey]),
+                    borderRadius: BorderRadius.circular(8),
                     boxShadow: const [
                       BoxShadow(
                         color: Colors.black12,
@@ -183,7 +177,7 @@ class _WordSearchGridState extends State<WordSearchGrid> {
                     child: Text(
                       letter,
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -192,27 +186,30 @@ class _WordSearchGridState extends State<WordSearchGrid> {
               },
             ),
           ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            children: widget.gameState.words.map((word) {
-              final isFound = widget.gameState.correctWords.contains(
-                word.toUpperCase(),
-              );
-              return Chip(
-                label: Text(
-                  word,
-                  style: TextStyle(
-                    color: isFound ? Colors.green : Colors.black,
-                    fontWeight: isFound ? FontWeight.bold : FontWeight.normal,
-                  ),
+        ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          alignment: WrapAlignment.center,
+          children: widget.gameState.words.map((word) {
+            final isFound = widget.gameState.correctWords.contains(word.toUpperCase());
+            return Chip(
+              label: Text(
+                word,
+                style: TextStyle(
+                  color: isFound ? Colors.green[900] : Colors.black87,
+                  fontWeight: isFound ? FontWeight.bold : FontWeight.normal,
                 ),
-                backgroundColor: isFound ? Colors.green[100] : Colors.grey[300],
-              );
-            }).toList(),
-          ),
-        ],
-      ),
+              ),
+              backgroundColor: isFound ? Colors.green[100] : Colors.orange[100],
+              side: const BorderSide(color: Colors.black26),
+              elevation: 2,
+              shadowColor: Colors.grey.shade400,
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
